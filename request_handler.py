@@ -1,10 +1,9 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_animals
 import json
 from views import get_all_animals
-from views.animal_requests import get_single_animal
+from views.animal_requests import create_animal, get_single_animal
 from views.employee_requests import get_all_employees, get_single_employee
-from views.location_requests import get_all_locations, get_single_location
+from views.location_requests import create_location, get_all_locations, get_single_location
 
 # Here's a class. It inherits from another class.
 # For now, think of a class as a container for functions that
@@ -107,18 +106,63 @@ class HandleRequests(BaseHTTPRequestHandler):
     # This weird code sends a response back to the client
         # self.wfile.write(f"{response}".encode())
 
+    def do_POST(self):
+        self._set_headers(201)
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+
+        # Convert JSON string to a Python dictionary
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Initialize new animal
+        new_animal = None
+
+        # Add a new animal to the list. Don't worry about
+        # the orange squiggle, you'll define the create_animal
+        # function next.
+        if resource == "animals":
+            new_animal = create_animal(post_body)
+
+        # Encode the new location and send in response
+        self.wfile.write(json.dumps(new_animal).encode())
+        # location
+        self._set_headers(201)
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+
+        # Convert JSON string to a Python dictionary
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Initialize new location
+        new_location = None
+
+        # Add a new animal to the list. Don't worry about
+        # the orange squiggle, you'll define the create_animal
+        # function next.
+        if resource == "locations":
+            new_location = create_location(post_body)
+
+        # Encode the new animal and send in response
+        self.wfile.write(json.dumps(new_location).encode())
+        
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.
-    def do_POST(self):
+    # def do_POST(self):
         """Handles POST requests to the server
         """
         # Set response code to 'Created'
-        self._set_headers(201)
+        # self._set_headers(201)
 
-        content_len = int(self.headers.get('content-length', 0))
-        post_body = self.rfile.read(content_len)
-        response = f"received post request:<br>{post_body}"
-        self.wfile.write(response.encode())
+        # content_len = int(self.headers.get('content-length', 0))
+        # post_body = self.rfile.read(content_len)
+        # response = f"received post request:<br>{post_body}"
+        # self.wfile.write(response.encode())
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any PUT request.
