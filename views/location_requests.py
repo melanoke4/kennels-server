@@ -36,11 +36,26 @@ def create_location(location):
     # Add 1 to whatever that number is
     new_id = max_id + 1
 
-    # Add an `id` property to the animal dictionary
+    # Add an `id` property to the location dictionary
     location["id"] = new_id
 
-    # Add the animal dictionary to the list
+    # Add the location dictionary to the list
     LOCATIONS.append(location)
 
     # Return the dictionary with `id` property added
     return location
+
+def delete_location(id):
+    # Initial -1 value for location index, in case one isn't found
+    location_index = -1
+
+    # Iterate the LOCATIONS list, but use enumerate() so that you
+    # can access the index value of each item
+    for index, location in enumerate(LOCATIONS):
+        if location["id"] == id:
+            # Found the location. Store the current index.
+            location_index = index
+
+    # If the location was found, use pop(int) to remove it from list
+    if location_index >= 0:
+        LOCATIONS.pop(location_index)
